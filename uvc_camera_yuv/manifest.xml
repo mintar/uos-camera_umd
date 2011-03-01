@@ -1,5 +1,5 @@
 <package>
-  <description brief="uvc_camera">
+  <description brief="uvc_camera_yuv">
 
      A collection of node(let)s that stream images from USB cameras (UVC)
      and provide CameraInfo messages to consumers. Includes a
@@ -8,11 +8,14 @@
 
      Currently uses the base driver from Morgan Quigley's uvc_cam package.
 
+     This is a slightly modified version of Ken Tossell's uvc_camera package 
+     that supports V4L2_PIX_FMT_YUV420 and uses this by default (Jochen Sprickerhof).
+
   </description>
-  <author>Ken Tossell/ktossell@umd.edu</author>
+  <author>Jochen Sprickerhof/jochen@sprickerhof.de</author>
   <license>GPL</license>
   <review status="experimental" notes=""/>
-  <url>http://ros.org/wiki/uvc_camera</url>
+  <url>http://ros.org/wiki/uvc_camera_yuv</url>
   <depend package="sensor_msgs"/>
   <depend package="camera_info_manager"/>
   <depend package="image_transport"/>
