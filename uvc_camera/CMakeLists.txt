@@ -34,8 +34,8 @@ gencfg()
 #target_link_libraries(example ${PROJECT_NAME})
 
 #rosbuild_add_executable(uvc_stereo src/uvc_stereo.cpp src/uvc_cam.cpp)
-rosbuild_add_library(nodelet_uvc_camera src/nodelets.cpp src/camera.cpp src/stereo.cpp src/uvc_cam.cpp)
+rosbuild_add_library(nodelet_uvc_camera src/nodelets.cpp src/camera.cpp src/stereo.cpp src/uvc_cam.cpp src/ccvt_c1.c)
 
-rosbuild_add_executable(camera_node src/camera_node.cpp src/camera.cpp src/uvc_cam.cpp)
-rosbuild_add_executable(stereo_node src/stereo_node.cpp src/stereo.cpp src/uvc_cam.cpp)
+rosbuild_add_executable(camera_node src/camera_node.cpp src/camera.cpp src/uvc_cam.cpp src/ccvt_c1.c)
+rosbuild_add_executable(stereo_node src/stereo_node.cpp src/stereo.cpp src/uvc_cam.cpp src/ccvt_c1.c)
 

@@ -10,6 +10,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include "uvc_cam/uvc_cam.h"
+#include "uvc_cam/ccvt.h"
 
 using std::string;
 using namespace uvc_cam;
@@ -95,7 +96,7 @@ Cam::Cam(const char *_device, mode_t _mode, int _width, int _height, int _fps)
   fmt.fmt.pix.width = width;
   fmt.fmt.pix.height = height;
   if (mode == MODE_RGB || mode == MODE_YUYV) // we'll convert later
-    fmt.fmt.pix.pixelformat = 'Y' | ('U' << 8) | ('Y' << 16) | ('V' << 24);
+    fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_YUV420;
   else
     fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_MJPEG;
   fmt.fmt.pix.field = V4L2_FIELD_ANY;
@@ -107,7 +108,7 @@ Cam::Cam(const char *_device, mode_t _mode, int _width, int _height, int _fps)
   streamparm.parm.capture.timeperframe.numerator = 1;
   streamparm.parm.capture.timeperframe.denominator = fps;
   if ((ret = ioctl(fd, VIDIOC_S_PARM, &streamparm)) < 0)
-    throw std::runtime_error("unable to set framerate");
+    printf("unable to set framerate");
   v4l2_queryctrl queryctrl;
   memset(&queryctrl, 0, sizeof(queryctrl));
   uint32_t i = V4L2_CID_BASE;
@@ -388,7 +389,8 @@ int Cam::grab(unsigned char **frame, uint32_t &bytes_used)
     // yuyv is 2 bytes per pixel. step through every pixel pair.
     unsigned char *prgb = rgb_frame;
     unsigned char *pyuv_last = last_yuv_frame;
-    for (unsigned i = 0; i < width * height * 2; i += 4)
+    ccvt_420p_rgb24(width, height, pyuv, prgb);
+    /*for (unsigned i = 0; i < width * height * 2; i += 4)
     {
       *prgb++ = sat(pyuv[i]+1.402f  *(pyuv[i+3]-128));
       *prgb++ = sat(pyuv[i]-0.34414f*(pyuv[i+1]-128)-0.71414f*(pyuv[i+3]-128));
@@ -401,7 +403,7 @@ int Cam::grab(unsigned char **frame, uint32_t &bytes_used)
         num_pixels_different++;
       if ((int)pyuv[i+2] - (int)pyuv_last[i+2] > motion_threshold_luminance ||
           (int)pyuv_last[i+2] - (int)pyuv[i+2] > motion_threshold_luminance)
-        num_pixels_different++;
+        num_pixels_different++;*/
 
       // this gives bgr images...
       /*
@@ -412,7 +414,7 @@ int Cam::grab(unsigned char **frame, uint32_t &bytes_used)
       *prgb++ = sat(pyuv[i+2]-0.34414f*(pyuv[i+1]-128)-0.71414f*(pyuv[i+3]-128));
       *prgb++ = sat(pyuv[i+2]+1.402f*(pyuv[i+3]-128));
       */
-    }
+    //}
     memcpy(last_yuv_frame, pyuv, width * height * 2);
     if (num_pixels_different > motion_threshold_count) // default: always true
       *frame = rgb_frame;
