@@ -10,6 +10,7 @@
 
      This is a slightly modified version of Ken Tossell's uvc_camera package 
      that supports V4L2_PIX_FMT_YUV420 and uses this by default (Jochen Sprickerhof).
+     Tested with the Logitech QuickCam Orbit/Sphere USB webcam (vendor/product ID 046d:08b5).
 
   </description>
   <author>Jochen Sprickerhof/jochen@sprickerhof.de</author>
